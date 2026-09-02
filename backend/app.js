@@ -8,6 +8,7 @@ const bookingRoutes = require("./src/routes/bookingRoutes.js");
 const reviewRoutes = require("./src/routes/reviewRoutes.js");
 const providerRoutes = require("./src/routes/providerRoutes.js");
 const adminRoutes = require("./src/routes/adminRoutes.js");
+const chatRoutes = require("./src/routes/chatRoutes.js");
 
 const errorHandler = require("./src/middleware/errorMiddleware");
 
@@ -37,6 +38,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/providers", providerRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/chat", chatRoutes);
 
 
 // Error handler - ALWAYS LAST

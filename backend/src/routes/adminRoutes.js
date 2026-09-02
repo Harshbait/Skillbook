@@ -8,7 +8,8 @@ const authorizeRoles = require("../middleware/roleMiddleware");
 const {
     getProviderApplications,
     approveProvider,
-    rejectProvider
+    rejectProvider,
+    revokeProvider
 } = require("../controllers/adminController");
 
 
@@ -36,6 +37,15 @@ router.patch(
     protect,
     authorizeRoles("admin"),
     rejectProvider
+);
+
+
+// Revoke provider access
+router.patch(
+    "/providers/:id/revoke",
+    protect,
+    authorizeRoles("admin"),
+    revokeProvider
 );
 
 

@@ -1,50 +1,77 @@
-import { createContext, useContext, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import API from "../services/api";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
+
+function buildUser(decoded, profile) {
+    return {
+        userId: decoded.userId,
+        role: profile?.role || decoded.role,
+        name: profile?.name,
+        email: profile?.email,
+        _id: profile?._id || decoded.userId,
+    };
+}
 
 export const AuthProvider = ({ children }) => {
+    const [token, setToken] = useState(() => localStorage.getItem("token"));
+    const [user, setUser] = useState(null);
+    const [ready, setReady] = useState(false);
 
-    const [token, setToken] = useState(
-        localStorage.getItem("token")
-    );
-
-
-    const getUserFromToken = (token) => {
-
-        if (!token) {
-            return null;
+    const loadSession = useCallback(async (currentToken) => {
+        if (!currentToken) {
+            setUser(null);
+            setReady(true);
+            return;
         }
 
         try {
-            return jwtDecode(token);
-        } catch (error) {
-            return null;
+            const decoded = jwtDecode(currentToken);
+            setUser(buildUser(decoded));
+
+            try {
+                const { data } = await API.get("/users/profile");
+                setUser(buildUser(decoded, data.user));
+            } catch (profileError) {
+                if (profileError.response?.status === 401) {
+                    localStorage.removeItem("token");
+                    setToken(null);
+                    setUser(null);
+                }
+            }
+        } catch {
+            localStorage.removeItem("token");
+            setToken(null);
+            setUser(null);
+        } finally {
+            setReady(true);
         }
-    };
+    }, []);
 
-
-    const user = getUserFromToken(token);
-
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        loadSession(token);
+    }, [token, loadSession]);
 
     const login = (newToken) => {
-
-        localStorage.setItem(
-            "token",
-            newToken
-        );
-
+        localStorage.setItem("token", newToken);
+        setReady(false);
         setToken(newToken);
     };
 
-
     const logout = () => {
-
         localStorage.removeItem("token");
-
         setToken(null);
+        setUser(null);
+        setReady(true);
     };
 
+    const refreshProfile = async () => {
+        if (!token) return;
+        await loadSession(token);
+    };
 
     return (
         <AuthContext.Provider
@@ -53,7 +80,9 @@ export const AuthProvider = ({ children }) => {
                 user,
                 login,
                 logout,
-                isAuthenticated: !!token
+                refreshProfile,
+                ready,
+                isAuthenticated: Boolean(token),
             }}
         >
             {children}
@@ -61,7 +90,4 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

@@ -1,10 +1,116 @@
 @import "tailwindcss";
+@import "locomotive-scroll/locomotive-scroll.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+
+    --color-canvas: #f6f5f2;
+    --color-ink: #141416;
+    --color-muted: #6b6a67;
+    --color-line: #e7e5e0;
+    --color-accent: #0f766e;
+    --color-accent-dark: #0b5b55;
+}
+
+:root {
+    --color-canvas: #f6f5f2;
+    --color-ink: #141416;
+    --color-muted: #6b6a67;
+    --color-line: #e7e5e0;
+    --color-card: #ffffff;
+}
+
+.dark {
+    --color-canvas: #090a0f;
+    --color-ink: #f3f4f6;
+    --color-muted: #9ca3af;
+    --color-line: #1e222d;
+    --color-card: #11131a;
+    color-scheme: dark;
+}
 
 * {
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    min-height: 100%;
+}
+
+html {
+    scroll-behavior: auto;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+#root {
+    min-height: 100%;
+}
+
+button,
+a {
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+input,
+textarea,
+select {
+    font-family: inherit;
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate-fade-up {
+    animation: fade-up 0.55s ease both;
+}
+
+.animate-fade-in {
+    animation: fade-in 0.4s ease both;
+}
+
+.delay-1 { animation-delay: 80ms; }
+.delay-2 { animation-delay: 160ms; }
+.delay-3 { animation-delay: 240ms; }
+.delay-4 { animation-delay: 320ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .animate-fade-up,
+    .animate-fade-in {
+        animation: none;
+    }
+
+    button,
+    a {
+        transition: none;
+    }
 }

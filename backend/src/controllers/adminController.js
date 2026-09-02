@@ -88,8 +88,48 @@ const rejectProvider = async (req, res) => {
 };
 
 
+// Revoke provider access (turn provider back into customer)
+const revokeProvider = async (req, res) => {
+    try {
+        const profile = await ProviderProfile.findById(req.params.id);
+
+        if (!profile) {
+            return res.status(404).json({
+                message: "Provider profile not found"
+            });
+        }
+
+        if (profile.status === "revoked") {
+            return res.status(400).json({
+                message: "Provider access is already revoked"
+            });
+        }
+
+        profile.status = "revoked";
+        await profile.save();
+
+        // Change user's role back to customer
+        await User.findByIdAndUpdate(
+            profile.user,
+            { role: "customer" }
+        );
+
+        res.status(200).json({
+            message: "Provider access revoked successfully. User role updated to customer."
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Server error",
+            error: error.message
+        });
+    }
+};
+
+
 module.exports = {
     getProviderApplications,
     approveProvider,
-    rejectProvider
+    rejectProvider,
+    revokeProvider
 };
