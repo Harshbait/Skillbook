@@ -12,7 +12,6 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](#)
 [![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](#)
 [![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](#-license)
 
 **Browse services · Book providers · Chat in real-time · Leave reviews**
 
@@ -508,12 +507,6 @@ Use [Postman](https://www.postman.com/) or any REST client:
 - [ ] Service image uploads
 - [ ] Search & advanced filter for services
 - [ ] Deployment (Render / Railway + Vercel)
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
 
 ---
 
